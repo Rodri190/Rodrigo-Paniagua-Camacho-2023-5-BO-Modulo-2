@@ -30,7 +30,7 @@ class Enemy(Sprite):
 
         self.zigzag_switch_x = random.choice([50, 100])
         self.zigzag_switch_y = self.rect.y + random.randint(50, 150)
-        self.zigzag_speed_x = 5
+        self.zigzag_speed_x = 2
 
     def update(self):
         self.rect.y += self.speed_y
@@ -61,7 +61,7 @@ class Enemy(Sprite):
         self.index += 1
         if self.index >= self.move_x_for or self.rect.right >= SCREEN_WIDTH or self.rect.left <= 0:
             if self.movement_x == 'right':
-                self.movement_x == 'left'
+                self.movement_x = 'left'
             elif self.movement_x == 'left':
-                self.movement_x == 'right'
+                self.movement_x = 'right'
             self.index = 0
