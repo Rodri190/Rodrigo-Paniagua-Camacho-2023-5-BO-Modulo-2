@@ -1,3 +1,4 @@
+import random
 from game.components.enemies.enemy import Enemy
 from game.utils.constants import SCREEN_HEIGHT
 class EnemyManager:
@@ -5,10 +6,10 @@ class EnemyManager:
     def __init__(self):
         self.enemies = []
 
-    def update(self):
+    def update(self, game):
         self.add_enemy()
         for enemy in self.enemies:
-            enemy.update()
+            enemy.update(game)
             if enemy.rect.y >= SCREEN_HEIGHT:
                 self.enemies.remove(enemy)
 
@@ -18,5 +19,6 @@ class EnemyManager:
 
     def add_enemy(self):
         if len(self.enemies) < 2:
+            enemy_type = random.choice(['enemy_1', 'enemy_2'])
             enemy = Enemy()
             self.enemies.append(enemy)

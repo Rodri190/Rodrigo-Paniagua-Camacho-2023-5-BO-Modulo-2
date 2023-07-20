@@ -1,6 +1,7 @@
 import random
 import pygame
 from pygame.sprite import Sprite
+from game.components.bullets.bullet import Bullet
 from game.utils.constants import ENEMY_1, ENEMY_2, SCREEN_WIDTH
 
 class Enemy(Sprite):
@@ -24,6 +25,9 @@ class Enemy(Sprite):
         self.move_x_for = random.randint(30,100)
         self.index = 0
 
+        self.type = 'enemy' 
+        self.shooting_time =  random.randint(30, 50)
+
         self.enemy_2_rect = self.enemy_2.get_rect()
         self.enemy_2_rect.x = self.rect.x
         self.enemy_2_rect.y = -self.ENEMY_HEIGHT
@@ -32,8 +36,9 @@ class Enemy(Sprite):
         self.zigzag_switch_y = self.rect.y + random.randint(50, 150)
         self.zigzag_speed_x = 2
 
-    def update(self):
+    def update(self,game):
         self.rect.y += self.speed_y
+        self.shoot(game.bullet_manager)
 
         if self.movement_x == 'left':
             self.rect.x -= self.speed_x
@@ -65,3 +70,10 @@ class Enemy(Sprite):
             elif self.movement_x == 'left':
                 self.movement_x = 'right'
             self.index = 0
+
+    def shoot(self, bullet_manager):
+        current_time = pygame.time.get_ticks()
+        if self.shooting_time <= current_time:
+            bullet = Bullet(self)
+            bullet_manager.add_bullet(bullet)
+            self.shooting_time += random.randint(30, 50)
