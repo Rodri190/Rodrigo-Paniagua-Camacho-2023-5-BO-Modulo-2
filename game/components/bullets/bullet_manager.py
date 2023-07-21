@@ -17,21 +17,18 @@ class BulletManager:
                 game.death_count += 1
                 self.enemy_bullets.remove(bullet)
                 game.playing = False
-            else:
-                self.shoot_enemy(bullet, game)
-            
-
+                
         for bullet in self.player_bullets:
             bullet.update()
             if bullet.rect.y < 0:
                 self.player_bullets.remove(bullet)
-
-    def shoot_enemy(self, bullet, game):
-        for enemy in game.enemy_manager.enemies:
+                
+        for enemy in game.enemy_manager.enemies:  
             if bullet.rect.colliderect(enemy.rect) and bullet.owner == 'player':
                 game.enemy_manager.enemies.remove(enemy)
                 game.update_score()
                 self.player_bullets.remove(bullet)
+                break 
 
     def draw(self, screen):
         for bullet in self.enemy_bullets:

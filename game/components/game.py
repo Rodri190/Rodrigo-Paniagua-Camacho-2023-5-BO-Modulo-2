@@ -22,7 +22,7 @@ class Game:
         self.enemy_manager = EnemyManager()
         self.bullet_manager = BulletManager()
         self.running = False
-        self.menu = Menu('Press any key to start....', self.screen)
+        self.menu = Menu('Press any key to start..', self.screen)
         self.death_count = 0
         self.score = 0
 
@@ -63,8 +63,8 @@ class Game:
         self.player.draw(self.screen)
         self.enemy_manager.draw(self.screen)
         self.bullet_manager.draw(self.screen)
+        self.draw_score()
         pygame.display.update()
-        pygame.display.flip()
 
     def draw_background(self):
         image = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -84,8 +84,27 @@ class Game:
         if self.death_count == 0:
             self.menu.draw(self.screen)
         else:
-            self.menu.update_message('New message')
+            self.menu.update_message('Game Over')
             self.menu.draw(self.screen)
+        
+        if self.death_count == 0:
+            self.menu.draw(self.screen)
+        else:
+            self.menu.update_message_score('Score')
+            self.menu.draw(self.screen)
+
+        if self.death_count == 0:
+            self.menu.draw(self.screen)
+        else:
+            self.menu.update_message_highest('Score')
+            self.menu.draw(self.screen)
+
+        if self.death_count == 0:
+            self.menu.draw(self.screen)
+        else:
+            self.menu.update_message_total('Total')
+            self.menu.draw(self.screen)
+        
 
         icon = self.image = pygame.transform.scale(ICON, (80,120))
         self.screen.blit(icon,(half_screen_width - 50, half_screen_height - 150))

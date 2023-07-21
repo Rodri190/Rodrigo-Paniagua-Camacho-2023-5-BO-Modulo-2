@@ -35,4 +35,18 @@ class Menu:
 
     def reset_screen_color(self, screen):
         screen.fill((255,255,255))
-            
+
+    def update_message_score(self, message):
+        self.text = self.text = self.font.render(message, True, (0,0,0))
+        self.text_rect = self.text.get_rect()
+        self.text_rect.center = (self.HALF_SCREEN_WIDTH, self.HALF_SCREEN_HEIGHT)
+
+    def update_message_highest(self, message):
+        self.text = self.text = self.font.render(message, True, (0,0,0))
+        self.text_rect = self.text.get_rect()
+        self.text_rect.center = (self.HALF_SCREEN_WIDTH, self.HALF_SCREEN_HEIGHT)
+
+    def update_message_total(self, message):
+        self.text = self.text = self.font.render(message, True, (0,0,0))
+        self.text_rect = self.text.get_rect()
+        self.text_rect.center = (self.HALF_SCREEN_WIDTH, self.HALF_SCREEN_HEIGHT)
