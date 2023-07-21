@@ -2,20 +2,20 @@ import random
 import pygame
 from pygame.sprite import Sprite
 from game.components.bullets.bullet import Bullet
+
 from game.utils.constants import ENEMY_1, ENEMY_2, SCREEN_WIDTH
 
 class Enemy(Sprite):
-    ENEMY_WIDTH =  40
+    ENEMY_WIDTH = 40
     ENEMY_HEIGHT = 60
     Y_POS = 20
     X_POS_LIST = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550]
-    SPEED_Y = 4
+    SPEED_Y = 6
     SPEED_X = 5
     MOV_X = {0: 'left', 1: 'right'}
 
     def __init__(self):
         self.image = pygame.transform.scale(ENEMY_1,(self.ENEMY_WIDTH, self.ENEMY_HEIGHT))
-        self.enemy_2 = pygame.transform.scale(ENEMY_2,(self.ENEMY_WIDTH, self.ENEMY_HEIGHT))
         self.rect = self.image.get_rect()
         self.rect.x = self.X_POS_LIST[random.randint(0,10)]*random.randint(1,2)
         self.rect.y = self.Y_POS
@@ -24,43 +24,27 @@ class Enemy(Sprite):
         self.movement_x = self.MOV_X[random.randint(0,1)]
         self.move_x_for = random.randint(30,100)
         self.index = 0
+        self.type = 'enemy'
+        self.shooting_time = random.randint(30, 50)
 
-        self.type = 'enemy' 
-        self.shooting_time =  random.randint(30, 50)
-
-        self.enemy_2_rect = self.enemy_2.get_rect()
-        self.enemy_2_rect.x = self.rect.x
-        self.enemy_2_rect.y = -self.ENEMY_HEIGHT
-
-        self.zigzag_switch_x = random.choice([50, 100])
-        self.zigzag_switch_y = self.rect.y + random.randint(50, 150)
-        self.zigzag_speed_x = 2
-
-    def update(self,game):
+    def update(self, game):
         self.rect.y += self.speed_y
         self.shoot(game.bullet_manager)
-
         if self.movement_x == 'left':
             self.rect.x -= self.speed_x
-
         else:
             self.rect.x += self.speed_x
-
-
-        if self.enemy_2_rect.x <= self.zigzag_switch_x:
-            self.zigzag_speed_x = 2
-
-        elif self.enemy_2_rect.x >= self.zigzag_switch_x + 100:
-            self.zigzag_speed_x = -2
-
-        self.enemy_2_rect.y += self.speed_y
-        self.enemy_2_rect.x += self.zigzag_speed_x
-
         self.change_movement_x()
 
-    def draw(self,screen):
+        for bullet in game.bullet_manager.player_bullets:
+            if self.rect.colliderect(bullet.rect):
+                game.bullet_manager.player_bullets.remove(bullet)
+                game.enemy_manager.enemies.remove(self)
+                break
+
+    def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
-        screen.blit(self.enemy_2, (self.enemy_2_rect.x, self.enemy_2_rect.y))
+       
 
     def change_movement_x(self):
         self.index += 1
