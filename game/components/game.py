@@ -28,31 +28,42 @@ class Game:
         self.score = 0
         self.highest_score = 0
         self.power_up_manager = PowerUpManager()
+        self.paused = False
+        pygame.mixer.music.load('game/assets/Sounds/music.mp3')
+        pygame.mixer.music.set_volume(0.5)
 
     def execute(self):
         self.running = True
         while self.running:
             if not self.playing:
                 self.show_menu()
+            pygame.mixer.music.play(-1)
         pygame.display.quit()
         pygame.quit()      
 
     def run(self):
         # Game loop: events - update - draw
         self.score = 0
+        self.lives = 3
         self.enemy_manager.reset()
         self.bullet_manager.reset_bullet()
-        self.playing = True                               
+        self.playing = True
         while self.playing:
             self.events()
-            self.update()
-            self.draw()        
+            if not self.paused:  #actualizar y dibujar cuando el juego no está en pausa
+                self.update()
+                self.draw()       
         
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
-
+            elif event.type == pygame.KEYDOWN:
+                if not self.playing:  # Si el juego no se está ejecutando
+                    self.run()  # Iniciar o reanudar el juego
+                elif event.key == pygame.K_x:  # tecla X para pausar o despausar
+                    self.paused = not self.paused  # Cambiar el estado de pausa al invertir su valor
+                    pygame.time.delay(200)
     def update(self):
         user_input = pygame.key.get_pressed()
         self.player.update(user_input, self)
@@ -124,3 +135,27 @@ class Game:
                 self.player.has_power_up = False
                 self.player.power_up_type = DEFAULT_TYPE
                 self.player.set_image()
+
+    def draw1(self):
+        self.clock.tick(FPS)
+        self.screen.fill((255, 255, 255))
+        self.draw_background()
+
+        if self.paused:  #si el juego está en pausa
+            self.draw_pause_text("paused")  # Mostrar el texto "Pausa"
+
+        else:
+            self.player.draw(self.screen)
+            self.enemy_manager.draw(self.screen)
+            self.bullet_manager.draw(self.screen)
+            self.draw_score()
+            self.power_up_manager.draw(self.screen)
+            self.draw_power_up_time()
+
+        pygame.display.update()
+
+    def draw_pause_text(self,text):
+        font = pygame.font.Font(FONT_STYLE, 60)
+        text = font.render("PAUSE", True, (255, 255, 255))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        self.screen.blit(text, text_rect)
